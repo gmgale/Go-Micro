@@ -1,0 +1,3 @@
+https://youtu.be/VzBGi_n65iU?list=PLmD8u-IFdreyh6EUfevBcbiuCKzFk0EW_
+
+curl http://localhost:9090 -UseBasicParsing -v
