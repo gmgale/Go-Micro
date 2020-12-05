@@ -28,7 +28,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, h *http.Request) {
 }
 
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle POST Product")
+	p.l.Println("Adding Product")
 
 	prod := r.Context().Value(KeyProduct{}).(data.Product)
 	data.AddProduct(&prod)
@@ -40,8 +40,7 @@ func (p Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Unable to convert ID", http.StatusBadRequest)
 	}
-
-	p.l.Println("Handle PUT Product", id)
+	p.l.Println("Updating product. ID: ", id)
 	prod := r.Context().Value(KeyProduct{}).(data.Product)
 
 	err = data.UpdateProduct(id, &prod)
