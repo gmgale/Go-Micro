@@ -1,0 +1,4 @@
+May have to add these to Header...
+
+rw.Header().Set("Access-Control-Allow-Origin", "*")
+rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT")
