@@ -7,9 +7,12 @@ import (
 	"github.com/gmgale/go_micro/8_Auto-generating_HTTP_clients_from_Swagger_files/data"
 )
 
+
 // MiddlewareValidateProduct validates the product in the request and calls next if ok
 func (p *Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		rw.Header().Add("Content-Type", "application/json")
+
 		prod := &data.Product{}
 
 		err := data.FromJSON(prod, r.Body)
