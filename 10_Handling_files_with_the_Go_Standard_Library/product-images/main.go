@@ -7,10 +7,11 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gmgale/go_micro/10_Handling_files_with_the_Go_Standard_Library/product-images/files"
+	"github.com/gmgale/go_micro/10_Handling_files_with_the_Go_Standard_Library/product-images/handlers"
 	"github.com/gorilla/mux"
 	hclog "github.com/hashicorp/go-hclog"
-	"github.com/nicholasjackson/building-microservices-youtube/product-images/files"
-	"github.com/nicholasjackson/building-microservices-youtube/product-images/handlers"
+
 	"github.com/nicholasjackson/env"
 )
 

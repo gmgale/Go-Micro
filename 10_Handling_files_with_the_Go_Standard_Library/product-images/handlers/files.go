@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/gmgale/go_micro/10_Handling_files_with_the_Go_Standard_Library/product-images/files"
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/go-hclog"
-	"github.com/nicholasjackson/building-microservices-youtube/product-images/files"
 )
 
 // Files is a handler for reading and writing files
