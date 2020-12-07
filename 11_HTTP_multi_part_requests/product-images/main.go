@@ -7,15 +7,16 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/gmgale/go_micro/10_Handling_files_with_the_Go_Standard_Library/product-images/files"
-	"github.com/gmgale/go_micro/10_Handling_files_with_the_Go_Standard_Library/product-images/handlers"
+	"github.com/gmgale/go_micro/11_HTTP_multi_part_requests/product-images/files"
+	"github.com/gmgale/go_micro/11_HTTP_multi_part_requests/product-images/handlers"
+	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	hclog "github.com/hashicorp/go-hclog"
 
 	"github.com/nicholasjackson/env"
 )
 
-var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
+var bindAddress = env.String("BIND_ADDRESS", false, ":9091", "Bind address for the server")
 var logLevel = env.String("LOG_LEVEL", false, "debug", "Log output level for the server [debug, info, trace]")
 var basePath = env.String("BASE_PATH", false, "./imagestore", "Base path to save images")
 
@@ -47,11 +48,12 @@ func main() {
 	// create a new serve mux and register the handlers
 	sm := mux.NewRouter()
 
-	// Upload files
-	ph := sm.Methods(http.MethodPost).Subrouter()
-	ph.HandleFunc("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", fh.ServeHTTP)
-	ph.HandleFunc("/", fh.ServeHTTP)
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
 
+	// upload files
+	ph := sm.Methods(http.MethodPost).Subrouter()
+	ph.HandleFunc("/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}", fh.UploadREST)
+	ph.HandleFunc("/", fh.UploadMultipart)
 
 	// get files
 	gh := sm.Methods(http.MethodGet).Subrouter()
@@ -63,7 +65,7 @@ func main() {
 	// create a new server
 	s := http.Server{
 		Addr:         *bindAddress,      // configure the bind address
-		Handler:      sm,                // set the default handler
+		Handler:      ch(sm),            // set the default handler
 		ErrorLog:     sl,                // the logger for the server
 		ReadTimeout:  5 * time.Second,   // max time to read request from the client
 		WriteTimeout: 10 * time.Second,  // max time to write response to the client
