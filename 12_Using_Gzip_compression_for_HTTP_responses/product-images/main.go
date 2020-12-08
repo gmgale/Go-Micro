@@ -7,14 +7,15 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/gmgale/go_micro/11_HTTP_multi_part_requests/product-images/files"
-	"github.com/gmgale/go_micro/11_HTTP_multi_part_requests/product-images/handlers"
+	"github.com/gmgale/go_micro/12_Using_Gzip_compression_for_HTTP_responses/product-images/files"
+	"github.com/gmgale/go_micro/12_Using_Gzip_compression_for_HTTP_responses/product-images/handlers"
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	hclog "github.com/hashicorp/go-hclog"
 
 	"github.com/nicholasjackson/env"
 )
+
 
 var bindAddress = env.String("BIND_ADDRESS", false, ":9091", "Bind address for the server")
 var logLevel = env.String("LOG_LEVEL", false, "debug", "Log output level for the server [debug, info, trace]")
@@ -44,6 +45,7 @@ func main() {
 
 	// create the handlers
 	fh := handlers.NewFiles(stor, l)
+	mw := handlers.GzipHandler{}
 
 	// create a new serve mux and register the handlers
 	sm := mux.NewRouter()
@@ -61,6 +63,7 @@ func main() {
 		"/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}",
 		http.StripPrefix("/images/", http.FileServer(http.Dir(*basePath))),
 	)
+	gh.Use(mw.GzipMiddleware)
 
 	// create a new server
 	s := http.Server{
